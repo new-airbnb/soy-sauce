@@ -2,6 +2,7 @@ import logging
 
 from flask import jsonify
 
+from new_airbnb import app
 from utils import error_msg
 
 logger = logging.getLogger(__name__)
@@ -20,8 +21,13 @@ def handler(code, msg, error):
     }), code
 
 
-def generate(app, ec):
+def generate(ec):
     app.register_error_handler(
         ec,
         lambda error: handler(ec, getattr(error_msg, 'MSG_{}'.format(ec)), error)
     )
+
+
+error_codes = [400, 401, 403, 404, 405, 409, 413, 500]
+for ec in error_codes:
+    generate(ec)
