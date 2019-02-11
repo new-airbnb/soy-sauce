@@ -1,6 +1,5 @@
 {
-    "log_level": "The level of logging here",
-    "database_uri": "Your database uri here",
-    "database_name": "Your database name here",
-    "sentry_dsn": "Your sentry dsn here"
+    "log_level": "ERROR",
+    "database_uri": "mongodb://teachertian:aGMpG4BW8hQU9np@ds331135.mlab.com:31135/birana",
+    "sentry_dsn": "https://3cf3191bbc8343f78d32edf5545d4226@sentry.io/1390859"
 }
