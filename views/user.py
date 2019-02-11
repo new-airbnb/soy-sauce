@@ -8,16 +8,10 @@ from db.dbutils import exists
 from db.models import User
 from utils import error_msg
 from utils.login_utils import UserLogin
+from utils.utils import str_to_boolean
 
 logger = logging.getLogger(__name__)
 user_blueprint = Blueprint("user", __name__)
-
-
-def str_to_boolean(string):
-    if string == "True":
-        return True
-    else:
-        return False
 
 
 @user_blueprint.route("register", methods=["POST"])
@@ -59,14 +53,8 @@ def login():
             "success": 0,
             "msg": error_msg.WRONG_PASSWORD_OR_EMAIL_ADDRESS
         })
-    try:
-        u = UserLogin(str(user._id), user.email, user.type)
-        login_user(user=u, remember=remember_me)
-        return jsonify({
-            "success": 1
-        })
-    except Exception as e:
-        logger.exception("Exception happened when trying to login. {}".format(e))
-        return jsonify({
-            "success": 0
-        }), 500
+    u = UserLogin(str(user._id), user.email, user.type)
+    login_user(user=u, remember=remember_me)
+    return jsonify({
+        "success": 1
+    })
