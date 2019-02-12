@@ -5,8 +5,9 @@ from db.models import User
 from new_airbnb import app
 
 login_manager = LoginManager()
-login_manager.init_app(app)
 login_manager.session_protection = "strong"
+login_manager.login_view = "user.login_needed"
+login_manager.init_app(app)
 
 
 class UserLogin(UserMixin):

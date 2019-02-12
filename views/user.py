@@ -1,7 +1,7 @@
 import logging
 
 from flask import Blueprint, request, jsonify
-from flask_login import login_user
+from flask_login import login_user, login_required, current_user, logout_user
 from pymodm.errors import ValidationError
 
 from db.dbutils import exists
@@ -58,3 +58,26 @@ def login():
     return jsonify({
         "success": 1
     })
+
+
+@user_blueprint.route("check_login", methods=["GET"])
+@login_required
+def check_login():
+    return jsonify({
+        "success": 1,
+        "msg": "user: {} sign in successfully.".format(current_user.email)
+    })
+
+
+@user_blueprint.route("logout", methods=["GET"])
+@login_required
+def logout():
+    logout_user()
+    return jsonify({
+        "success": 1
+    })
+
+
+@user_blueprint.route("login_needed", methods=["GET"])
+def login_needed():
+    return "You need login at first."
