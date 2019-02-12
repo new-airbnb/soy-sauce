@@ -76,8 +76,3 @@ def logout():
     return jsonify({
         "success": 1
     })
-
-
-@user_blueprint.route("login_needed", methods=["GET"])
-def login_needed():
-    return "You need login at first."
