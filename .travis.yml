@@ -1,0 +1,18 @@
+# these 4 lines are the Travis' official workaround of using python 3.7
+language: python
+sudo: required
+dist: xenial
+python: "3.7"
+
+branches:
+  only:
+  - master
+  - /^feature\/.*$/
+  - /^bugfix\/.*$/
+
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+# command to run tests
+script:
+  - pytest
