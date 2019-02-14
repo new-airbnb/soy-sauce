@@ -33,9 +33,9 @@ def init(config_file):
 
     if conf["sentry_dsn"] != "":
         import sentry_sdk
-        from sentry_sdk.integrations.flask import FlaskIntegration
+        from sentry_sdk.integrations.django import DjangoIntegration
         sentry_sdk.init(conf["sentry_dsn"],
-                        integrations=[FlaskIntegration()])
+                        integrations=[DjangoIntegration()])
     else:
         logging.info("Not Found Sentry DSN in config file")
 
