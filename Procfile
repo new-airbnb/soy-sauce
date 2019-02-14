@@ -1,1 +1,1 @@
-web: gunicorn soy_sauce.wsgi
+web: echo 123
