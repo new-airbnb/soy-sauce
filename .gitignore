@@ -248,3 +248,7 @@ $RECYCLE.BIN/
 
 # config file
 config-*.json
+
+# static folder of Django
+static/
+staticfiles/
