@@ -1,26 +1,33 @@
-from bson import ObjectId
-from flask_login import LoginManager, UserMixin
+from functools import wraps
 
-from db.models import User
-from new_airbnb import app
+from django.http import JsonResponse
 
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.session_protection = "strong"
+from db.dbutils import exists
+from user.models import User
+from utils import error_msg
 
 
-class UserLogin(UserMixin):
-    def __init__(self, id, email, type):
-        self.id = id
-        self.email = email
-        self.type = type
+def login_user(session, user, remember):
+    session['user'] = {
+        'email': user.email,
+        'type': user.type
+    }
+    expiry = 3600 * 24
+    if remember:
+        expiry *= 30
+    session.set_expiry(expiry)
 
 
-@login_manager.user_loader
-def load_user(userid):
-    try:
-        _user = User.objects.get({"_id": ObjectId(userid)})
-        user = UserLogin(userid, _user.email, _user.type)
-        return user
-    except:
-        return None
+def login_required(f):
+    @wraps(f)
+    def wrapper(request, *args, **kwargs):
+        s = request.session
+        if 'user' not in s \
+            or 'email' not in s['user'] \
+            or not exists(User, email=s['user']['email']):
+            return JsonResponse({
+                "success": 0,
+                'msg': error_msg.MSG_403
+            }, status=403)
+        return f(request, *args, **kwargs)
+    return wrapper

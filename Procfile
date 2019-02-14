@@ -1,1 +1,1 @@
-web: python run.py config.json
+web: python manage.py runserver
