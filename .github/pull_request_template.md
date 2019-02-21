@@ -6,7 +6,18 @@
 - [ ] Check the commit's or even all commits' message styles matches our requested structure.
 - [ ] Check your code style, comments style.
 
-### Description
-Please describe your pull request. (Also please link all the issues that are related.)
+### Some necessary questions (Answer them briefly)
+
+#### What issue(s) does this PR aim to solve?
+
+(blank place for answers)
+
+#### What is the purpose of the changes made?
+
+(blank place for answers)
+
+#### What tests are done?
+
+(blank place for answers)
 
 💔Thank you!
