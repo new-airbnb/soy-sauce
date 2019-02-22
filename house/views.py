@@ -7,8 +7,8 @@ from django.views.decorators.http import require_http_methods
 
 from db.dbutils import exists, db_connection, geo_info_save
 from utils import error_msg
-from .models import House, Photo
 from utils.login_utils import login_required
+from .models import House, Photo
 
 logger = logging.getLogger(__name__)
 db = db_connection()
@@ -23,20 +23,21 @@ def create(request):
     city = request.POST["house_city"]
     province = request.POST["house_province"]
     postcode = request.POST["house_postcode"]
-    coordinate = request.POST["house_coordinate"]
-    if isinstance(coordinate, str):
-        coordinate = [float(i) for i in coordinate.lstrip("[").rstrip("]").split(",")]
+    longitude = request.POST["longitude"]
+    latitude = request.POST["latitude"]
+    coordinate = [float(longitude), float(latitude)]
     if exists(House, **{"name": name, "place_id": place_id, "address": address}):
         logger.warning(
             "Failed to add new house, house with name: {}, id: {}, address:{} already exists.".format(name, id,
-                                                                                              address))
+                                                                                                      address))
         return JsonResponse({
             "success": 0,
             "msg": error_msg.DUPLICATE_HOUSE
         })
     else:
         try:
-            house = House(name=name, place_id=place_id, address=address, city=city, province=province, postcode=postcode)
+            house = House(name=name, place_id=place_id, address=address, city=city, province=province,
+                          postcode=postcode)
             house.save()
         except ValidationError as e:
             return JsonResponse({
@@ -47,15 +48,16 @@ def create(request):
         if isinstance(res, ObjectId):
             return JsonResponse({
                 "success": 1,
-                "info":{
+                "info": {
                     "house_id": str(house.pk),
                     "geo_object_id": str(res)
                 }
             })
         else:
+            logger.error("Fail to save geo info of house: {}. Something wrong with MongoDB.".format(name))
             return JsonResponse({
                 "success": 0
-            }), 500
+            }, status=500)
 
 
 @require_http_methods(["POST"])
@@ -69,7 +71,7 @@ def upload_photo(request):
         photo.save()
         return JsonResponse({
             "success": 1,
-            "info":{
+            "info": {
                 "photo_id": str(photo.pk)
             }
         })

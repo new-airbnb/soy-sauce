@@ -18,12 +18,8 @@ def db_connection():
     return MongoClient(host=conf["database_uri"])
 
 
-DB = "birana"
-COLLECTION = "house_locations"
-
-
 def geo_info_save(db, name, place_id, coordinate):
-    collection = db[DB][COLLECTION]
+    collection = db[conf["database_name"]][conf["database_collection"]]
     geo_info = {
         "name": name,
         "place_id": place_id,
