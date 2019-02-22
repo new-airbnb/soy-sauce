@@ -8,16 +8,14 @@
 
 ### Some necessary questions (Answer them briefly)
 
+
 #### What issue(s) does this PR aim to solve?
 
-(blank place for answers)
 
 #### What is the purpose of the changes made?
 
-(blank place for answers)
 
 #### What tests are done?
 
-(blank place for answers)
 
 💔Thank you!
