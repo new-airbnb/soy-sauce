@@ -20,3 +20,8 @@ def str_to_boolean(string):
         return True
     else:
         return False
+
+
+def house_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/house_<name>/<filename>
+    return 'house_{0}/{1}'.format(instance.house.pk, filename)

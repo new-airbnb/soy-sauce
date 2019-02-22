@@ -15,10 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('', include('website.urls')),
     path('user/', include('user.urls')),
+    path('house/', include('house.urls')),
     path('admin/', admin.site.urls)
 ]
 
@@ -28,3 +31,6 @@ handler400 = lambda req, *args, **kwargs: handler(400, error_msg.MSG_400, kwargs
 handler403 = lambda req, *args, **kwargs: handler(403, error_msg.MSG_403, kwargs)
 handler404 = lambda req, *args, **kwargs: handler(404, error_msg.MSG_404, kwargs)
 handler500 = lambda req, *args, **kwargs: handler(500, error_msg.MSG_500, kwargs)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
