@@ -19,7 +19,7 @@ def db_connection():
 
 
 def geo_info_save(db, name, place_id, coordinate):
-    collection = db[conf["database_name"]][conf["database_collection"]]
+    collection = db[conf["database_name"]][conf["house_location_collection"]]
     geo_info = {
         "name": name,
         "place_id": place_id,
