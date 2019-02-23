@@ -324,3 +324,10 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/macos,django,python,windows,pycharm,visualstudiocode
+
+# config
+config-*.json
+
+# static folder
+static/
+staticfiles/
