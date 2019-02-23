@@ -327,6 +327,7 @@ $RECYCLE.BIN/
 
 # config
 config-*.json
+config.json
 
 # static folder
 static/
