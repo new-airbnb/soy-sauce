@@ -6,7 +6,7 @@ conf = {
     "log_level": "INFO",
     "host": "0.0.0.0",
     "port": os.environ.get("PORT", 9991),
-    "debug": True,
+    "debug": False,
     "database_uri": os.environ.get("DATABASE_URI", ""),
     "database_name": os.environ.get("DATABASE_NAME", ""),
     "sentry_dsn": os.environ.get("SENTRY_DSN", "")
@@ -40,13 +40,7 @@ def init(config_file):
         logging.info("Not Found Sentry DSN in config file")
 
 
-dirs = os.listdir("./")
-if "config-xwt.json" in dirs:
-    init("config-xwt.json")
-elif "config-zjq.json" in dirs:
-    init("config-zjq.json")
-else:
-    init('config.json')
+init('config.json')
 
 LOGGING = {
     'version': 1,
