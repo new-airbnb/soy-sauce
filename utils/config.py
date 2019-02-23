@@ -6,7 +6,6 @@ conf = {
     "log_level": "INFO",
     "host": "0.0.0.0",
     "port": os.environ.get("PORT", 9991),
-    "debug": False,
     "database_uri": os.environ.get("DATABASE_URI", ""),
     "database_name": os.environ.get("DATABASE_NAME", ""),
     "sentry_dsn": os.environ.get("SENTRY_DSN", "")
