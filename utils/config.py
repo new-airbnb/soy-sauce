@@ -7,9 +7,9 @@ conf = {
     "host": "0.0.0.0",
     "port": os.environ.get("PORT", 9991),
     "debug": True,
-    "database_uri": "",
-    "database_name": "",
-    "sentry_dsn": ""
+    "database_uri": os.environ.get("DATABASE_URI", ""),
+    "database_name": os.environ.get("DATABASE_NAME", ""),
+    "sentry_dsn": os.environ.get("SENTRY_DSN", "")
 }
 
 log_level_list = ["CRITICAL", "FATAL", "DEBUG", "INFO", "WARNING", "WARN", "ERROR", "NOTSET"]
@@ -39,7 +39,15 @@ def init(config_file):
     else:
         logging.info("Not Found Sentry DSN in config file")
 
-init('config.json')
+
+dirs = os.listdir("./")
+if "config-xwt.json" in dirs:
+    init("config-xwt.json")
+elif "config-zjq.json" in dirs:
+    init("config-zjq.json")
+else:
+    init('config.json')
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,  # keep Django's default loggers
