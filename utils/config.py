@@ -8,7 +8,8 @@ conf = {
     "port": os.environ.get("PORT", 9991),
     "database_uri": os.environ.get("DATABASE_URI", ""),
     "database_name": os.environ.get("DATABASE_NAME", ""),
-    "sentry_dsn": os.environ.get("SENTRY_DSN", "")
+    "sentry_dsn": os.environ.get("SENTRY_DSN", ""),
+    "house_location_collection": os.environ.get("HOUSE_LOCATION_COLLECTION", "")
 }
 
 log_level_list = ["CRITICAL", "FATAL", "DEBUG", "INFO", "WARNING", "WARN", "ERROR", "NOTSET"]
