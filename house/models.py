@@ -1,6 +1,6 @@
 from django.db import models
 
-from utils.utils import get_timestamp, house_directory_path
+from utils.utils import get_timestamp
 
 
 class House(models.Model):
@@ -29,5 +29,5 @@ class House(models.Model):
 class Photo(models.Model):
     """Photo Model"""
     house = models.ForeignKey('house.House', on_delete=models.CASCADE)
-    photo = models.FileField(upload_to=house_directory_path)
+    photo = models.CharField(max_length=10240000)
     upload_at = models.DateTimeField(default=get_timestamp)

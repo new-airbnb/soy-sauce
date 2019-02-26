@@ -13,3 +13,4 @@ ILLEGAL_ARGUMENT = MSG_400
 DUPLICATE_EMAIL = 'User with the same email exists'
 WRONG_PASSWORD_OR_EMAIL_ADDRESS = 'Invalid email address or password'
 DUPLICATE_HOUSE = 'House with the same name, id and address exists'
+TOO_LARGE_IMAGE = 'Image size is too large'
