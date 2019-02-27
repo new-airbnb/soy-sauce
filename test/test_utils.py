@@ -5,7 +5,9 @@ class TestUtils(object):
     def test_str_to_boolean(self):
         cases = [
             ("True", True),
-            ("False", False)
+            ("False", False),
+            ("true", True),
+            ("false", False)
         ]
         for s, gt in cases:
             assert utils.str_to_boolean(s) == gt

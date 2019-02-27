@@ -17,7 +17,7 @@ def get_timestamp(t=None, with_time=True):
 
 
 def str_to_boolean(string):
-    if string == "True":
+    if string.upper() == "TRUE":
         return True
     else:
         return False
