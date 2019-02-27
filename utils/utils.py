@@ -1,4 +1,5 @@
 from datetime import date, datetime
+import base64
 
 
 def get_timestamp(t=None, with_time=True):
@@ -21,7 +22,12 @@ def str_to_boolean(string):
     else:
         return False
 
+MAX_IMAGE_SIZE = 10240000
 
-def house_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/house_<name>/<filename>
-    return 'house_{0}/{1}'.format(instance.house.pk, filename)
+
+def image_to_str(image):
+    with image.open("rb") as f:
+        string = base64.b64encode(f.read())
+        if len(string) > MAX_IMAGE_SIZE:
+            return None
+        return string

@@ -9,6 +9,7 @@ from db.dbutils import exists, db_connection, geo_info_save
 from utils import error_msg
 from utils.login_utils import login_required
 from .models import House, Photo
+from utils.utils import image_to_str
 
 logger = logging.getLogger(__name__)
 db = db_connection()
@@ -67,14 +68,21 @@ def upload_photo(request):
     photo_file = request.FILES["photo"]
     try:
         house = House.objects.get(pk=int(house_id))
-        photo = Photo(house=house, photo=photo_file)
-        photo.save()
-        return JsonResponse({
-            "success": 1,
-            "info": {
-                "photo_id": str(photo.pk)
-            }
-        })
+        _base64_str = image_to_str(photo_file)
+        if _base64_str:
+            photo = Photo(house=house, photo=_base64_str)
+            photo.save()
+            return JsonResponse({
+                "success": 1,
+                "info": {
+                    "photo_id": str(photo.pk)
+                }
+            })
+        else:
+            return JsonResponse({
+                "success": 0,
+                "msg": error_msg.TOO_LARGE_IMAGE
+            })
     except Exception as e:
         return JsonResponse({
             "success": 0,
