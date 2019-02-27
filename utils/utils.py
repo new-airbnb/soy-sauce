@@ -22,10 +22,12 @@ def str_to_boolean(string):
     else:
         return False
 
+MAX_IMAGE_SIZE = 10240000
+
 
 def image_to_str(image):
     with image.open("rb") as f:
         string = base64.b64encode(f.read())
-        if len(string) > 10240000:
+        if len(string) > MAX_IMAGE_SIZE:
             return None
         return string
