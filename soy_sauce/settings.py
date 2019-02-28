@@ -137,9 +137,6 @@ DATABASES = {
         'ENFORCE_SCHEMA': True,
         'NAME': conf['database_name'],
         'HOST': conf['database_uri'],
-        'TEST': {
-            'NAME': conf['database_name']
-        }
     }
 }
 
