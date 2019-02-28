@@ -31,6 +31,21 @@ class House(models.Model):
     def date_is_valid(self):
         return self.date_end > self.date_begin
 
+    def dict_it(self):
+        return {
+            "name": self.name,
+            "place_id": self.place_id,
+            "address": self.address,
+            "city": self.city,
+            "province": self.province,
+            "postcode": self.postcode,
+            "date_begin": self.date_begin,
+            "date_end": self.date_end,
+            "number_of_beds": self.number_of_beds,
+            "create_at": self.create_at
+        }
+
+
 
 class Photo(models.Model):
     """Photo Model"""

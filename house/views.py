@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 
-from db.dbutils import exists, db_connection, geo_info_save
+from db.dbutils import exists, db_connection, geo_info_save, geo_info_search
 from utils import error_msg
 from utils.login_utils import login_required
 from .models import House, Photo
@@ -67,7 +67,7 @@ def create(request):
                 "success": 0,
                 "msg": str(e)
             }, status=400)
-        res = geo_info_save(db, name, place_id, coordinate)
+        res = geo_info_save(db, house.pk, place_id, coordinate)
         if isinstance(res, ObjectId):
             return JsonResponse({
                 "success": 1,
@@ -110,3 +110,38 @@ def upload_photo(request):
             "success": 0,
             "msg": str(e)
         })
+
+
+@require_http_methods(["POST"])
+@login_required
+def search(request):
+    try:
+        longitude = request.POST["longitude"]
+        latitude = request.POST["latitude"]
+        date_begin = request.POST["date_begin"]
+        date_end = request.POST["date_end"]
+        num_of_beds = request.POST["number_of_beds"]
+    except KeyError as e:
+        return JsonResponse({
+            "success": 0,
+            "msg": error_msg.MSG_400 + ': {}'.format(e)
+        }, status=400)
+
+    coordinate = [float(longitude), float(latitude)]
+    geo_search_res = geo_info_search(db, coordinate)
+    if not geo_search_res:
+        logger.error("Fail to search house with coordinate: {}. Something wrong with MongoDB.".format(str(coordinate)))
+        return JsonResponse({
+            "success": 0
+        }, status=500)
+    house_list = list()
+    for each in geo_search_res:
+        house = House.objects.get(pk=each["house_id"])
+        if house.number_of_beds >= num_of_beds and house.date_begin >= date_begin and house.date_end >= date_end:
+            house_info = house.dict_it()
+            house_info["longitude"], house_info["latitude"] = each["location"]["coordinates"]
+            house_list.append(house_info)
+    return JsonResponse({
+        "success": 1,
+        "house_list": house_list
+    })

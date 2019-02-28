@@ -18,23 +18,59 @@ def db_connection():
     return MongoClient(host=conf["database_uri"])
 
 
-def geo_info_save(db, name, place_id, coordinate):
+def geo_info_save(db, house_id, place_id, coordinate):
     collection = db[conf["database_name"]][conf["house_location_collection"]]
+    collection.ensure_index({"location": "2dsphere"})
     geo_info = {
-        "name": name,
+        "house_id": house_id,
         "place_id": place_id,
         "location":{
             "type": "Point",
-            "coordinates":coordinate
+            "coordinates": coordinate
         }
     }
     try:
         res = collection.insert_one(geo_info).inserted_id
-        logger.info("House with name: {}, id: {} insert into Mongodb successfully".format(name, res))
+        logger.info("House with id: {}, id: {} insert into Mongodb successfully".format(house_id, res))
     except Exception as e:
         logger.error(e)
         res = 0
     return res
+
+
+def geo_info_search(db, coordinate):
+    collection = db[conf["database_name"]][conf["house_location_collection"]]
+    _GeoJSON = {
+        "location": {
+            "$near": {
+                "$geometry": {
+                    "type": "Point",
+                    "coordinates": coordinate
+                },
+                "$maxDistance": 20*1000,
+                "$minDistance": 0
+            }
+        }
+    }
+    try:
+        cursor = collection.find(_GeoJSON)
+    except Exception as e:
+        logger.error(e)
+        cursor = None
+    return cursor
+
+
+HOUSE_COLLECTION = "house_house"
+
+
+def collection_find(db, **kwargs):
+    collection = db[conf["database_name"][HOUSE_COLLECTION]]
+    try:
+        cursor = collection.find(kwargs)
+    except Exception as e:
+        logger.error(e)
+        cursor = None
+    return cursor
 
 
 if __name__ == "__main__":
