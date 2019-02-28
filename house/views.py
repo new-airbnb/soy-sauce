@@ -27,6 +27,8 @@ def create(request):
     longitude = request.POST["longitude"]
     latitude = request.POST["latitude"]
     coordinate = [float(longitude), float(latitude)]
+    date_begin = request.POST["date_begin"]
+    date_end = request.POST["date_end"]
     if exists(House, **{"name": name, "place_id": place_id, "address": address}):
         logger.warning(
             "Failed to add new house, house with name: {}, id: {}, address:{} already exists.".format(name, id,
@@ -36,15 +38,27 @@ def create(request):
             "msg": error_msg.DUPLICATE_HOUSE
         })
     else:
+        house = House(
+                    name=name,
+                    place_id=place_id,
+                    address=address,
+                    city=city,
+                    province=province,
+                    postcode=postcode,
+                    date_begin=date_begin,
+                    date_end=date_end)
+        if not house.date_is_valid():
+            return JsonResponse({
+                "success": 0,
+                "msg": error_msg.WRONG_DATE_BEGIN_END
+            }, status=400)
         try:
-            house = House(name=name, place_id=place_id, address=address, city=city, province=province,
-                          postcode=postcode)
             house.save()
         except ValidationError as e:
             return JsonResponse({
                 "success": 0,
                 "msg": str(e)
-            })
+            }, status=400)
         res = geo_info_save(db, name, place_id, coordinate)
         if isinstance(res, ObjectId):
             return JsonResponse({

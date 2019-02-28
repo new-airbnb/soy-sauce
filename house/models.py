@@ -1,6 +1,6 @@
 from django.db import models
 
-from utils.utils import get_timestamp
+from utils.utils import get_date_timestamp, get_timestamp
 
 
 class House(models.Model):
@@ -23,7 +23,12 @@ class House(models.Model):
     ]
     province = models.CharField(max_length=2, choices=PROVINCES, default="ON")
     postcode = models.CharField(max_length=6)
-    create_at = models.DateTimeField(default=get_timestamp)
+    date_begin = models.DateField(default=get_date_timestamp)
+    date_end = models.DateField(default=get_date_timestamp)
+    create_at = models.DateTimeField(default=get_date_timestamp)
+
+    def date_is_valid(self):
+        return self.date_end > self.date_begin
 
 
 class Photo(models.Model):
