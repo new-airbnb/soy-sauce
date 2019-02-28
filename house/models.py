@@ -25,6 +25,7 @@ class House(models.Model):
     postcode = models.CharField(max_length=6)
     date_begin = models.DateField(default=get_date_timestamp)
     date_end = models.DateField(default=get_date_timestamp)
+    number_of_beds = models.PositiveIntegerField(default=1)
     create_at = models.DateTimeField(default=get_date_timestamp)
 
     def date_is_valid(self):
