@@ -136,7 +136,10 @@ DATABASES = {
         'ENGINE': 'djongo',
         'ENFORCE_SCHEMA': True,
         'NAME': conf['database_name'],
-        'HOST': conf['database_uri']
+        'HOST': conf['database_uri'],
+        'TEST': {
+            'NAME': conf['database_name']
+        }
     }
 }
 
