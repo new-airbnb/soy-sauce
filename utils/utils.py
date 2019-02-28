@@ -2,6 +2,12 @@ from datetime import date, datetime
 import base64
 
 
+def get_date_timestamp(t=None):
+    # used for django model default value when migrate
+    # migration doesn't support lambda
+    return get_timestamp(t, with_time=False)
+
+
 def get_timestamp(t=None, with_time=True):
     if t:
         dt = t
