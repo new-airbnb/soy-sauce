@@ -30,7 +30,7 @@ def geo_info_save(db, name, place_id, coordinate):
     }
     try:
         res = collection.insert_one(geo_info).inserted_id
-        logger.info("House with name: {}, id: {} insert into Mongodb successfully".format(name, id))
+        logger.info("House with name: {}, id: {} insert into Mongodb successfully".format(name, res))
     except Exception as e:
         logger.error(e)
         res = 0
