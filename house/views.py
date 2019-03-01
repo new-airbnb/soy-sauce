@@ -8,8 +8,8 @@ from django.views.decorators.http import require_http_methods
 from db.dbutils import exists, db_connection, geo_info_save, geo_info_search
 from utils import error_msg
 from utils.login_utils import login_required
-from .models import House, Photo
 from utils.utils import image_to_str, str_to_datetime
+from .models import House, Photo
 
 logger = logging.getLogger(__name__)
 db = db_connection()
@@ -36,25 +36,27 @@ def create(request):
             "success": 0,
             "msg": error_msg.MSG_400 + ': {}'.format(e)
         }, status=400)
-    if exists(House, **{"name": name, "place_id": place_id, "address": address, "date_begin": date_begin, "date_end": date_end}):
+    if exists(House, **{"name": name, "place_id": place_id, "address": address, "date_begin": date_begin,
+                        "date_end": date_end}):
         logger.warning(
-            "Failed to add new house, house with name: {}, place_id: {}, address:{} and date range {} to {} already exists.".format(name, place_id,
-                                                                                                      address, date_begin, date_end))
+            "Failed to add new house, house with name: {}, place_id: {}, address:{} and date range {} to {} already exists.".format(
+                name, place_id,
+                address, date_begin, date_end))
         return JsonResponse({
             "success": 0,
             "msg": error_msg.DUPLICATE_HOUSE
         })
     else:
         house = House(
-                    name=name,
-                    place_id=place_id,
-                    address=address,
-                    city=city,
-                    province=province,
-                    postcode=postcode,
-                    date_begin=date_begin,
-                    date_end=date_end,
-                    number_of_beds=number_of_beds)
+            name=name,
+            place_id=place_id,
+            address=address,
+            city=city,
+            province=province,
+            postcode=postcode,
+            date_begin=date_begin,
+            date_end=date_end,
+            number_of_beds=number_of_beds)
         if not house.date_is_valid():
             return JsonResponse({
                 "success": 0,
@@ -140,7 +142,8 @@ def search(request):
         coordinate = [float(longitude), float(latitude)]
         geo_search_res = geo_info_search(db, coordinate)
         if not geo_search_res:
-            logger.error("Fail to search house with coordinate: {}. Something wrong with MongoDB.".format(str(coordinate)))
+            logger.error(
+                "Fail to search house with coordinate: {}. Something wrong with MongoDB.".format(str(coordinate)))
             return JsonResponse({
                 "success": 0
             }, status=500)
