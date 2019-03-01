@@ -1,7 +1,8 @@
 import logging
-from pymongo import MongoClient
-from utils.config import conf
 
+from pymongo import MongoClient
+
+from utils.config import conf
 
 logger = logging.getLogger(__name__)
 
@@ -14,17 +15,23 @@ def exists(model, **kwargs):
     return True
 
 
+def index_check(client):
+    _collection = client[conf["database_name"]][conf["house_location_collection"]]
+    _collection.ensure_index([("location", "2dsphere")])
+
+
 def db_connection():
-    return MongoClient(host=conf["database_uri"])
+    client = MongoClient(host=conf["database_uri"])
+    index_check(client)
+    return client
 
 
 def geo_info_save(db, house_id, place_id, coordinate):
     collection = db[conf["database_name"]][conf["house_location_collection"]]
-    collection.ensure_index([("location", "2dsphere")])
     geo_info = {
         "house_id": house_id,
         "place_id": place_id,
-        "location":{
+        "location": {
             "type": "Point",
             "coordinates": coordinate
         }
@@ -38,7 +45,7 @@ def geo_info_save(db, house_id, place_id, coordinate):
     return res
 
 
-def geo_info_search(db, coordinate):
+def geo_info_search(db, coordinate, max_distance=20 * 1000):
     collection = db[conf["database_name"]][conf["house_location_collection"]]
     _GeoJSON = {
         "location": {
@@ -47,7 +54,7 @@ def geo_info_search(db, coordinate):
                     "type": "Point",
                     "coordinates": coordinate
                 },
-                "$maxDistance": 20*1000,
+                "$maxDistance": max_distance,
                 "$minDistance": 0
             }
         }
@@ -75,5 +82,5 @@ def collection_find(db, **kwargs):
 
 if __name__ == "__main__":
     db = db_connection()
-    res = geo_info_save(db, "test", "123qweasdzxc", [43.4791166,-80.5281053])
+    res = geo_info_save(db, "test", "123qweasdzxc", [43.4791166, -80.5281053])
     print(res)

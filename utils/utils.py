@@ -33,6 +33,7 @@ def str_to_boolean(string):
     else:
         return False
 
+
 MAX_IMAGE_SIZE = 10240000
 
 

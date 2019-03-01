@@ -119,28 +119,31 @@ def upload_photo(request):
 def search(request):
     try:
         if len(request.GET) == 0:
-            homepage_recommend = True
+            no_arguments = True
         else:
-            homepage_recommend = False
+            no_arguments = False
             longitude = request.GET["longitude"]
             latitude = request.GET["latitude"]
             date_begin = request.GET["date_begin"]
             date_end = request.GET["date_end"]
             num_of_beds = request.GET["number_of_beds"]
+            max_distance = request.GET["max_distance"]
             if isinstance(num_of_beds, str):
                 num_of_beds = int(num_of_beds)
             if isinstance(date_begin, str):
                 date_begin = str_to_datetime(date_begin)
             if isinstance(date_end, str):
                 date_end = str_to_datetime(date_end)
+            if isinstance(max_distance, str):
+                max_distance = int(max_distance)
     except KeyError as e:
         return JsonResponse({
             "success": 0,
             "msg": error_msg.MSG_400 + ': {}'.format(e)
         }, status=400)
-    if homepage_recommend is False:
+    if no_arguments is False:
         coordinate = [float(longitude), float(latitude)]
-        geo_search_res = geo_info_search(db, coordinate)
+        geo_search_res = geo_info_search(db, coordinate, max_distance)
         if not geo_search_res:
             logger.error(
                 "Fail to search house with coordinate: {}. Something wrong with MongoDB.".format(str(coordinate)))
@@ -150,7 +153,7 @@ def search(request):
         house_list = list()
         for each in geo_search_res:
             house = House.objects.get(pk=each["house_id"])
-            if house.number_of_beds >= num_of_beds and house.date_begin >= date_begin and house.date_end >= date_end:
+            if house.number_of_beds >= num_of_beds and house.date_begin <= date_begin and house.date_end >= date_end:
                 house_info = house.dict_it()
                 house_info["longitude"], house_info["latitude"] = each["location"]["coordinates"]
                 house_list.append(house_info)
@@ -164,6 +167,5 @@ def search(request):
         return_house_list = [each.dict_it() for each in houses]
         return JsonResponse({
             "success": 1,
-            "homepage_recommend": homepage_recommend,
             "house_list": return_house_list
         })
