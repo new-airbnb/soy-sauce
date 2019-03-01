@@ -22,6 +22,11 @@ def get_timestamp(t=None, with_time=True):
         return s
 
 
+def str_to_datetime(t):
+    d = datetime.strptime(t, "%Y-%m-%d")
+    return date(d.year, d.month, d.day)
+
+
 def str_to_boolean(string):
     if string.upper() == "TRUE":
         return True

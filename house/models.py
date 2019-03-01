@@ -45,6 +45,8 @@ class House(models.Model):
             "create_at": self.create_at
         }
 
+    class Meta:
+        ordering = ["-create_at"]
 
 
 class Photo(models.Model):

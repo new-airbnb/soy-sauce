@@ -20,7 +20,7 @@ def db_connection():
 
 def geo_info_save(db, house_id, place_id, coordinate):
     collection = db[conf["database_name"]][conf["house_location_collection"]]
-    collection.ensure_index({"location": "2dsphere"})
+    collection.ensure_index([("location", "2dsphere")])
     geo_info = {
         "house_id": house_id,
         "place_id": place_id,
