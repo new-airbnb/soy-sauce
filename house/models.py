@@ -1,6 +1,6 @@
 from django.db import models
 
-from utils.utils import get_timestamp, house_directory_path
+from utils.utils import get_date_timestamp, get_timestamp
 
 
 class House(models.Model):
@@ -23,11 +23,34 @@ class House(models.Model):
     ]
     province = models.CharField(max_length=2, choices=PROVINCES, default="ON")
     postcode = models.CharField(max_length=6)
-    create_at = models.DateTimeField(default=get_timestamp)
+    date_begin = models.DateField(default=get_date_timestamp)
+    date_end = models.DateField(default=get_date_timestamp)
+    number_of_beds = models.PositiveIntegerField(default=1)
+    create_at = models.DateTimeField(default=get_date_timestamp)
+
+    def date_is_valid(self):
+        return self.date_end > self.date_begin
+
+    def dict_it(self):
+        return {
+            "name": self.name,
+            "place_id": self.place_id,
+            "address": self.address,
+            "city": self.city,
+            "province": self.province,
+            "postcode": self.postcode,
+            "date_begin": self.date_begin,
+            "date_end": self.date_end,
+            "number_of_beds": self.number_of_beds,
+            "create_at": self.create_at
+        }
+
+    class Meta:
+        ordering = ["-create_at"]
 
 
 class Photo(models.Model):
     """Photo Model"""
     house = models.ForeignKey('house.House', on_delete=models.CASCADE)
-    photo = models.FileField(upload_to=house_directory_path)
+    photo = models.CharField(max_length=10240000)
     upload_at = models.DateTimeField(default=get_timestamp)

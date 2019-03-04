@@ -1,4 +1,11 @@
 from datetime import date, datetime
+import base64
+
+
+def get_date_timestamp(t=None):
+    # used for django model default value when migrate
+    # migration doesn't support lambda
+    return get_timestamp(t, with_time=False)
 
 
 def get_timestamp(t=None, with_time=True):
@@ -15,13 +22,24 @@ def get_timestamp(t=None, with_time=True):
         return s
 
 
+def str_to_datetime(t):
+    d = datetime.strptime(t, "%Y-%m-%d")
+    return date(d.year, d.month, d.day)
+
+
 def str_to_boolean(string):
-    if string == "True":
+    if string.upper() == "TRUE":
         return True
     else:
         return False
 
 
-def house_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/house_<name>/<filename>
-    return 'house_{0}/{1}'.format(instance.house.pk, filename)
+MAX_IMAGE_SIZE = 10240000
+
+
+def image_to_str(image):
+    with image.open("rb") as f:
+        string = base64.b64encode(f.read())
+        if len(string) > MAX_IMAGE_SIZE:
+            return None
+        return string

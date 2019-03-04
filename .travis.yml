@@ -18,3 +18,4 @@ install:
 script:
   - python manage.py collectstatic
   - pytest
+

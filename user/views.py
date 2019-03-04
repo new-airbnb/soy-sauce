@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 @require_http_methods(["POST"])
 def register(request):
     email, password = request.POST["email"], request.POST["password"]
-    if exists(User, **{"email": email, "password": password}):
+    if exists(User, **{"email": email}):
         logger.warning("Failed to add new user: email {} already exists".format(email))
         return JsonResponse({
             "success": 0,
