@@ -17,7 +17,8 @@ def exists(model, **kwargs):
 
 def index_check(client):
     _collection = client[conf["database_name"]][conf["house_location_collection"]]
-    _collection.ensure_index([("location", "2dsphere")])
+    if "location_2dsphere" not in _collection.index_information():
+        _collection.create_index([("location", "2dsphere")])
 
 
 def db_connection():
