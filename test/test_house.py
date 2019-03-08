@@ -11,7 +11,6 @@ class TestHouse(BaseTest):
 
     @pytest.mark.run(order=21)
     def test_create_house(self, client, db_no_rollback):
-        # TODO login can be encapsulated to a decorator
         data = {
             'house_name': 'big house',
             'place_id': '9ni9fdqwj19219jdj9q192j9129e',

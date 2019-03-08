@@ -11,19 +11,23 @@ class BaseTest:
             url = self.prefix + url
         return client.post(url, *args, **kwargs)
 
-    def create_user(self, client, email, password):
+    def create_user(self, client, email, password, should_succ=True):
         data = {
             "email": email,
             "password": password
         }
         response = self.post(client, "/user/register", data, user_operate=True)
-        assert response.status_code == 200
+        if should_succ:
+            assert response.status_code == 200
+        return response
 
-    def login(self, client, email, password):
+    def login(self, client, email, password, should_succ=True):
         data = {
             "email": email,
             "password": password,
             "remember_me": 'false'
         }
         response = self.post(client, "/user/login", data, user_operate=True)
-        assert response.status_code == 200
+        if should_succ:
+            assert response.status_code == 200
+        return response
