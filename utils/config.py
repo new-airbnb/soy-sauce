@@ -10,6 +10,7 @@ conf = {
     "house_location_collection": os.environ.get("HOUSE_LOCATION_COLLECTION", ""),
     "test_database_uri": os.environ.get("TEST_DATABASE_URI", ""),
     "test_database_name": os.environ.get("TEST_DATABASE_NAME", ""),
+    "testing": False
 }
 
 log_level_list = ["CRITICAL", "FATAL", "DEBUG", "INFO", "WARNING", "WARN", "ERROR", "NOTSET"]
@@ -22,6 +23,10 @@ def init(config_file):
         for k, v in _conf.items():
             if k in conf:
                 conf[k] = v
+
+    if conf["testing"]:
+        conf["database_uri"] = conf["test_database_uri"]
+        conf["database_name"] = conf["test_database_name"]
 
     if conf["database_uri"] == "":
         print("Error: Missing \"database_uri\" in config file.")
