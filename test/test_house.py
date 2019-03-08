@@ -206,8 +206,7 @@ class TestHouse(BaseTest):
         response_json = response.json()
         print(response_json)
         assert response_json['success'] == 1
-        # here, something really tricky, I haven't resolved.
-        assert len(response_json['house_list']) > 0
+        assert len(response_json['house_list']) == 1
 
         data = {
             'longitude': '1.23456789',
