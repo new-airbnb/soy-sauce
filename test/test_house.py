@@ -1,6 +1,7 @@
 import pytest
-from .base_test import BaseTest
+
 import utils.error_msg as em
+from .base_test import BaseTest
 
 
 class TestHouse(BaseTest):
@@ -226,3 +227,88 @@ class TestHouse(BaseTest):
         }
         response = self.get(client, '/search', data)
         assert response.status_code == 400
+
+    @pytest.mark.run(order=51)
+    def test_house_info_request_method_is_get(self, client, db_no_rollback):
+        self.login(client, self.email, self.password)
+        # pre work, get the house_id
+        data = {
+            'longitude': '1.23456789',
+            'latitude': '2.345678901',
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02',
+            'number_of_beds': '3',
+            'max_distance': '20000'
+        }
+        response = self.get(client, '/search', data)
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json['success'] == 1
+        assert len(response_json['house_list']) == 1
+
+        house_id = response_json['house_list'][0]['house_id']
+        assert isinstance(house_id, int) is True
+
+        data = {
+            "house_id": house_id
+        }
+
+        # test GET
+        response = self.get(client, '/info', data)
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json['success'] == 1
+        assert response_json['info']['name'] == 'big house'
+
+    @pytest.mark.run(order=52)
+    def test_house_info_request_method_is_post(self, client, db_no_rollback):
+        self.login(client, self.email, self.password)
+
+        # pre work, get the house_id
+        data = {
+            'longitude': '1.23456789',
+            'latitude': '2.345678901',
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02',
+            'number_of_beds': '3',
+            'max_distance': '20000'
+        }
+        response = self.get(client, '/search', data)
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json['success'] == 1
+        assert len(response_json['house_list']) == 1
+
+        house_id = response_json['house_list'][0]['house_id']
+        assert isinstance(house_id, int) is True
+
+        data = {
+            "house_id": house_id
+        }
+
+        # test POST
+        response = self.post(client, '/info', data)
+        assert response.status_code == 405
+
+    @pytest.mark.run(order=53)
+    def test_house_info_wrong_house_id(self, client, db_no_rollback):
+        self.login(client, self.email, self.password)
+        data = {
+            "house_id": 9999
+        }
+        response = self.get(client, '/info', data)
+        assert response.status_code == 404
+
+        response_json = response.json()
+        assert response_json['success'] == 0
+
+    @pytest.mark.run(order=54)
+    def test_house_info_without_login(self, client, db_no_rollback):
+        data = {
+            "house_id": 1
+        }
+        response = self.get(client, '/info', data)
+        assert response.status_code == 403
