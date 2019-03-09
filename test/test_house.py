@@ -118,26 +118,6 @@ class TestHouse(BaseTest):
         assert response_json['success'] == 0
         assert response_json['msg'] == em.WRONG_DATE_BEGIN_END
 
-        # validation error (house_province)
-        data = {
-            'house_name': 'big house',
-            'place_id': '90jijfjfja9j2j9j29j1923',
-            'house_address': '123 main street n',
-            'house_city': 'waterloo',
-            'house_province': 'ontario',
-            'house_postcode': 'A1B C2D',
-            'longitude': '1.23456789',
-            'latitude': '2.345678901',
-            'date_begin': '2019-03-01',
-            'date_end': '2019-03-02',
-            'number_of_beds': '3',
-            'description': 'this is a really nice house with a big living room.'
-        }
-        response = self.post(client, '/create', data)
-        assert response.status_code == 400
-        response_json = response.json()
-        assert response_json['success'] == 0
-
         # validation error (number_of_beds)
         data = {
             'house_name': 'big house',
