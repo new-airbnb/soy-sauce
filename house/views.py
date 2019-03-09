@@ -192,7 +192,7 @@ def info(request):
         return JsonResponse({
             "success": 0,
             "msg": str(e)
-        }, 404)
+        }, status=404)
     return JsonResponse({
         "success": 1,
         "info": house.dict_it()
