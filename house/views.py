@@ -1,7 +1,7 @@
 import logging
 
 from bson import ObjectId
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 
@@ -172,3 +172,28 @@ def search(request):
             "success": 1,
             "house_list": return_house_list
         })
+
+
+@require_http_methods(["GET"])
+@login_required
+def info(request):
+    try:
+        house_id = request.GET["house_id"]
+    except KeyError as e:
+        return JsonResponse({
+            "success": 0,
+            "msg": error_msg.MSG_400 + ': {}'.format(e)
+        }, status=400)
+    if isinstance(house_id, str):
+        house_id = int(house_id)
+    try:
+        house = House.objects.get(pk=house_id)
+    except ObjectDoesNotExist as e:
+        return JsonResponse({
+            "success": 0,
+            "msg": str(e)
+        })
+    return JsonResponse({
+        "success": 1,
+        "info": house.dict_it()
+    })

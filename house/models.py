@@ -43,6 +43,7 @@ class House(models.Model):
             "date_begin": self.date_begin,
             "date_end": self.date_end,
             "number_of_beds": self.number_of_beds,
+            "description": self.description,
             "create_at": self.create_at
         }
 
