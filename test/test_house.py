@@ -22,7 +22,8 @@ class TestHouse(BaseTest):
             'latitude': '2.345678901',
             'date_begin': '2019-03-01',
             'date_end': '2019-03-02',
-            'number_of_beds': '3'
+            'number_of_beds': '3',
+            'description': 'this is a really nice house with a big living room.'
         }
         # forbidden
         response = self.post(client, '/create', data)
@@ -50,7 +51,8 @@ class TestHouse(BaseTest):
             'latitude': '-5.999494939',
             'date_begin': '2019-03-01',
             'date_end': '2019-03-02',
-            'number_of_beds': '3'
+            'number_of_beds': '3',
+            'description': 'although I am small, I have ten bathrooms.'
         }
 
         # success
@@ -71,7 +73,8 @@ class TestHouse(BaseTest):
             'latitude': '2.345678901',
             'date_begin': '2019-03-01',
             'date_end': '2019-03-02',
-            'number_of_beds': '3'
+            'number_of_beds': '3',
+            'description': 'this is a really nice house with a big living room.'
         }
         response = self.post(client, '/create', data)
         assert response.status_code == 200
@@ -94,10 +97,10 @@ class TestHouse(BaseTest):
         response = self.post(client, '/create', data)
         assert response.status_code == 400
 
-        # wrong date
+        # wrong date (date_begin > date_end)
         data = {
-            'house_name': 'big house',
-            'place_id': '9ni9fdqwj19219jdj9q192j9129e',
+            'house_name': 'preston house',
+            'place_id': '9f91ufhujjasdj21j192931239',
             'house_address': '123 main street n',
             'house_city': 'waterloo',
             'house_province': 'ON',
@@ -106,7 +109,8 @@ class TestHouse(BaseTest):
             'latitude': '2.345678901',
             'date_begin': '2019-03-01',
             'date_end': '2019-02-01',
-            'number_of_beds': '3'
+            'number_of_beds': '3',
+            'description': 'I am 690 a month.'
         }
         response = self.post(client, '/create', data)
         assert response.status_code == 400
@@ -117,7 +121,7 @@ class TestHouse(BaseTest):
         # validation error (house_province)
         data = {
             'house_name': 'big house',
-            'place_id': '9ni9fdqwj19219jdj9q192j9129e',
+            'place_id': '90jijfjfja9j2j9j29j1923',
             'house_address': '123 main street n',
             'house_city': 'waterloo',
             'house_province': 'ontario',
@@ -125,27 +129,9 @@ class TestHouse(BaseTest):
             'longitude': '1.23456789',
             'latitude': '2.345678901',
             'date_begin': '2019-03-01',
-            'date_end': '2019-02-01',
-            'number_of_beds': '3'
-        }
-        response = self.post(client, '/create', data)
-        assert response.status_code == 400
-        response_json = response.json()
-        assert response_json['success'] == 0
-
-        # validation error (house_province)
-        data = {
-            'house_name': 'big house',
-            'place_id': '9ni9fdqwj19219jdj9q192j9129e',
-            'house_address': '123 main street n',
-            'house_city': 'waterloo',
-            'house_province': 'ontario',
-            'house_postcode': 'A1B C2D',
-            'longitude': '1.23456789',
-            'latitude': '2.345678901',
-            'date_begin': '2019-03-01',
-            'date_end': '2019-02-01',
-            'number_of_beds': '3'
+            'date_end': '2019-03-02',
+            'number_of_beds': '3',
+            'description': 'this is a really nice house with a big living room.'
         }
         response = self.post(client, '/create', data)
         assert response.status_code == 400
@@ -163,7 +149,7 @@ class TestHouse(BaseTest):
             'longitude': '1.23456789',
             'latitude': '2.345678901',
             'date_begin': '2019-03-01',
-            'date_end': '2019-02-01',
+            'date_end': '2019-03-02',
             'number_of_beds': '-1'
         }
         response = self.post(client, '/create', data)

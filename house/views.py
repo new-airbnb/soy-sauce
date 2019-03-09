@@ -31,6 +31,7 @@ def create(request):
         date_begin = request.POST["date_begin"]
         date_end = request.POST["date_end"]
         number_of_beds = request.POST["number_of_beds"]
+        description = request.POST["description"]
     except KeyError as e:
         return JsonResponse({
             "success": 0,
@@ -56,7 +57,9 @@ def create(request):
             postcode=postcode,
             date_begin=date_begin,
             date_end=date_end,
-            number_of_beds=number_of_beds)
+            number_of_beds=number_of_beds,
+            description=description
+        )
         if not house.date_is_valid():
             return JsonResponse({
                 "success": 0,
