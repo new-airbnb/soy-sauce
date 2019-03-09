@@ -36,6 +36,7 @@ class House(models.Model):
         return {
             "name": self.name,
             "place_id": self.place_id,
+            "house_id": self.pk,
             "address": self.address,
             "city": self.city,
             "province": self.province,
