@@ -1,6 +1,6 @@
 # soy-sauce
 
-[![Build Status](https://travis-ci.com/new-airbnb/soy-sauce.svg?branch=master)](https://travis-ci.com/new-airbnb/soy-sauce)
+[![Build Status](https://travis-ci.com/new-airbnb/soy-sauce.svg?branch=master)](https://travis-ci.com/new-airbnb/soy-sauce) ![GitHub issues](https://img.shields.io/github/issues/new-airbnb/soy-sauce.svg) ![GitHub pull requests](https://img.shields.io/github/issues-pr/new-airbnb/soy-sauce.svg) ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/new-airbnb/soy-sauce.svg) 
 
 Hey there, welcome to our repository of backend, find the wiki here: [wiki](https://github.com/new-airbnb/wiki)
 
