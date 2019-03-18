@@ -26,7 +26,7 @@ class House(models.Model):
     date_begin = models.DateField(default=get_date_timestamp)
     date_end = models.DateField(default=get_date_timestamp)
     number_of_beds = models.PositiveIntegerField(default=1)
-    create_at = models.DateTimeField(default=get_date_timestamp)
+    create_at = models.DateTimeField(default=get_timestamp)
     description = models.CharField(max_length=200, default="no description")
 
     def date_is_valid(self):
@@ -56,16 +56,16 @@ class Photo(models.Model):
     """Photo Model"""
     house = models.ForeignKey('house.House', on_delete=models.CASCADE)
     photo = models.CharField(max_length=10240000)
-    upload_at = models.DateTimeField(default=get_timestamp)
+    create_at = models.DateTimeField(default=get_timestamp)
 
 
 class Booking(models.Model):
     """Booking Model"""
     house = models.ForeignKey('house.House', on_delete=models.CASCADE)
     user_id = models.ForeignKey('user.User', on_delete=models.CASCADE)
-    date_begin = models.DateTimeField(default=get_date_timestamp)
-    date_end = models.DateTimeField(default=get_date_timestamp)
-    create_at = models.DateTimeField(default=get_date_timestamp)
+    date_begin = models.DateField(default=get_date_timestamp)
+    date_end = models.DateField(default=get_date_timestamp)
+    create_at = models.DateTimeField(default=get_timestamp)
 
     def date_is_valid(self):
         return self.date_end > self.date_begin

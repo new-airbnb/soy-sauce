@@ -1,5 +1,5 @@
-from datetime import date, datetime
 import base64
+from datetime import date, datetime
 
 
 def get_date_timestamp(t=None):
@@ -48,3 +48,18 @@ def image_to_str(image):
 def get_current_user_id(request):
     current_user = request.user
     return current_user.pk
+
+
+def check_if_this_time_can_book(house, date_begin, date_end):
+    from house.models import Booking
+    query_set = Booking.objects.filter(**{"house": house})
+    if not query_set:
+        return True
+    for each in query_set:
+        # I don't want to combine all the if conditions together, it's not clear to see.
+        if each.date_begin <= date_begin <= each.date_end or \
+                each.date_end <= date_end <= each.date_end:
+            return False
+        if each.date_end > date_begin and each.end_date < date_end:
+            return False
+    return True

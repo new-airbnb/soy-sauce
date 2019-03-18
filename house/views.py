@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods
 from db.dbutils import exists, db_connection, geo_info_save, geo_info_search
 from utils import error_msg
 from utils.login_utils import login_required
-from utils.utils import image_to_str, str_to_datetime, get_current_user_id
+from utils.utils import image_to_str, str_to_datetime, get_current_user_id, check_if_this_time_can_book
 from .models import House, Photo, Booking
 
 logger = logging.getLogger(__name__)
@@ -156,9 +156,11 @@ def search(request):
         house_list = list()
         for each in geo_search_res:
             house = House.objects.get(pk=each["house_id"])
-            if house.number_of_beds >= num_of_beds and house.date_begin <= date_begin and house.date_end >= date_end:
+            if house.number_of_beds >= num_of_beds and house.date_begin <= date_begin and house.date_end >= date_end and \
+                    check_if_this_time_can_book(house, date_begin, date_end):
                 house_info = house.dict_it()
                 house_info["longitude"], house_info["latitude"] = each["location"]["coordinates"]
+                house_info["active"] = True
                 house_list.append(house_info)
         return JsonResponse({
             "success": 1,
@@ -213,6 +215,12 @@ def create_booking(request):
             "msg": error_msg.MSG_400 + ": {}".format(e)
         }, status=400)
 
+    if isinstance(date_begin, str):
+        date_begin = str_to_datetime(date_begin)
+
+    if isinstance(date_end, str):
+        date_end = str_to_datetime(date_end)
+
     house = House.objects.get(pk=int(house_id))
 
     if exists(Booking, **{"house": house, "date_begin": date_begin, "date_end": date_end}):
@@ -232,6 +240,12 @@ def create_booking(request):
                 "success": 0,
                 "msg": error_msg.WRONG_DATE_BEGIN_END
             }, status=400)
+
+        if not check_if_this_time_can_book(house, date_begin, date_end):
+            return JsonResponse({
+                "success": 0,
+                "msg": error_msg.HAS_ALREADY_BOOKED
+            })
 
         try:
             book.save()
