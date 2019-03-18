@@ -1,5 +1,6 @@
 from datetime import date, datetime
 import base64
+from django.utils import timezone
 
 
 def get_date_timestamp(t=None):
@@ -43,3 +44,7 @@ def image_to_str(image):
         if len(string) > MAX_IMAGE_SIZE:
             return None
         return string
+
+
+def get_time_zone_object():
+    return datetime.now(tz=timezone.utc)
