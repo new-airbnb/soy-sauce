@@ -156,11 +156,12 @@ def search(request):
         house_list = list()
         for each in geo_search_res:
             house = House.objects.get(pk=each["house_id"])
-            if house.number_of_beds >= num_of_beds and house.date_begin <= date_begin and house.date_end >= date_end and \
-                    check_if_this_time_can_book(house, date_begin, date_end):
+            if house.number_of_beds >= num_of_beds and house.date_begin <= date_begin and house.date_end >= date_end:
                 house_info = house.dict_it()
                 house_info["longitude"], house_info["latitude"] = each["location"]["coordinates"]
-                house_info["active"] = True
+                house_info["active"] = False
+                if check_if_this_time_can_book(house, date_begin, date_end):
+                    house_info["active"] = True
                 house_list.append(house_info)
         return JsonResponse({
             "success": 1,
@@ -227,7 +228,7 @@ def create_booking(request):
         return JsonResponse({
             "success": 0,
             "msg": error_msg.HAS_ALREADY_BOOKED
-        }, status=400)
+        }, status=404)
     else:
         book = Booking(
             house=house,
@@ -245,7 +246,7 @@ def create_booking(request):
             return JsonResponse({
                 "success": 0,
                 "msg": error_msg.HAS_ALREADY_BOOKED
-            })
+            }, status=404)
 
         try:
             book.save()

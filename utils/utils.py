@@ -60,7 +60,7 @@ def check_if_this_time_can_book(house, date_begin, date_end):
     for each in query_set:
         # I don't want to combine all the if conditions together, it's not clear to see.
         if each.date_begin <= date_begin <= each.date_end or \
-                each.date_end <= date_end <= each.date_end:
+                each.date_begin <= date_end <= each.date_end:
             return False
         if each.date_end > date_begin and each.end_date < date_end:
             return False
