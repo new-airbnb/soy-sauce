@@ -8,8 +8,8 @@ from django.views.decorators.http import require_http_methods
 from db.dbutils import exists, db_connection, geo_info_save, geo_info_search
 from utils import error_msg
 from utils.login_utils import login_required
-from utils.utils import image_to_str, str_to_datetime
-from .models import House, Photo
+from utils.utils import image_to_str, str_to_datetime, get_current_user_id
+from .models import House, Photo, Booking
 
 logger = logging.getLogger(__name__)
 db = db_connection()
@@ -197,3 +197,52 @@ def info(request):
         "success": 1,
         "info": house.dict_it()
     })
+
+
+@require_http_methods(['POST'])
+@login_required
+def create_booking(request):
+    try:
+        house_id = request.POST["house_id"]
+        user_id = get_current_user_id(request)
+        date_begin = request.POST["date_begin"]
+        date_end = request.POST["date_end"]
+    except KeyError as e:
+        return JsonResponse({
+            "success": 0,
+            "msg": error_msg.MSG_400 + ": {}".format(e)
+        }, status=400)
+
+    house = House.objects.get(pk=int(house_id))
+
+    if exists(Booking, **{"house": house, "date_begin": date_begin, "date_end": date_end}):
+        return JsonResponse({
+            "success": 0,
+            "msg": error_msg.HAS_ALREADY_BOOKED
+        }, status=400)
+    else:
+        book = Booking(
+            house=house,
+            user_id=user_id,
+            date_begin=date_begin,
+            date_end=date_end
+        )
+        if not book.date_is_valid():
+            return JsonResponse({
+                "success": 0,
+                "msg": error_msg.WRONG_DATE_BEGIN_END
+            }, status=400)
+
+        try:
+            book.save()
+        except ValidationError as e:
+            return JsonResponse({
+                "success": 0,
+                "mgs": str(e)
+            }, status=400)
+        return JsonResponse({
+            "success": 1,
+            "info": {
+                "book_id": str(book.pk)
+            }
+        })

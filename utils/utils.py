@@ -43,3 +43,8 @@ def image_to_str(image):
         if len(string) > MAX_IMAGE_SIZE:
             return None
         return string
+
+
+def get_current_user_id(request):
+    current_user = request.user
+    return current_user.pk
