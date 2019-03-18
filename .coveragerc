@@ -8,3 +8,6 @@ omit =
   *wsgi/*,
   manage.py,
   base_test.py,
+  *__init__.py,
+  *config.py,
+  *error_handler.py,
