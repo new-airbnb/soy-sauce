@@ -1,3 +1,10 @@
 {
-
+    "testing": true,
+    "log_level": "ERROR",
+    "database_name": "birana",
+    "database_uri": "mongodb://teachertian:aGMpG4BW8hQU9np@ds331135.mlab.com:31135/birana",
+    "sentry_dsn": "https://3cf3191bbc8343f78d32edf5545d4226@sentry.io/1390859",
+    "house_location_collection": "house_geo_info",
+    "test_database_name": "test-birana",
+    "test_database_uri": "mongodb://teachertian:aGMpG4BW8hQU9np@ds125602.mlab.com:25602/test-birana"
 }

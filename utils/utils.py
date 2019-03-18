@@ -1,6 +1,8 @@
 import base64
 from datetime import date, datetime
 
+from django.utils import timezone
+
 
 def get_date_timestamp(t=None):
     # used for django model default value when migrate
@@ -63,3 +65,7 @@ def check_if_this_time_can_book(house, date_begin, date_end):
         if each.date_end > date_begin and each.end_date < date_end:
             return False
     return True
+
+
+def get_time_zone_object():
+    return datetime.now(tz=timezone.utc)

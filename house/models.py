@@ -1,6 +1,6 @@
 from django.db import models
 
-from utils.utils import get_date_timestamp, get_timestamp
+from utils.utils import get_date_timestamp, get_time_zone_object
 
 
 class House(models.Model):
@@ -26,7 +26,7 @@ class House(models.Model):
     date_begin = models.DateField(default=get_date_timestamp)
     date_end = models.DateField(default=get_date_timestamp)
     number_of_beds = models.PositiveIntegerField(default=1)
-    create_at = models.DateTimeField(default=get_timestamp)
+    create_at = models.DateTimeField(default=get_time_zone_object)
     description = models.CharField(max_length=200, default="no description")
 
     def date_is_valid(self):
@@ -56,7 +56,7 @@ class Photo(models.Model):
     """Photo Model"""
     house = models.ForeignKey('house.House', on_delete=models.CASCADE)
     photo = models.CharField(max_length=10240000)
-    create_at = models.DateTimeField(default=get_timestamp)
+    upload_at = models.DateTimeField(default=get_time_zone_object)
 
 
 class Booking(models.Model):
@@ -65,7 +65,7 @@ class Booking(models.Model):
     user_id = models.ForeignKey('user.User', on_delete=models.CASCADE)
     date_begin = models.DateField(default=get_date_timestamp)
     date_end = models.DateField(default=get_date_timestamp)
-    create_at = models.DateTimeField(default=get_timestamp)
+    create_at = models.DateTimeField(default=get_time_zone_object)
 
     def date_is_valid(self):
         return self.date_end > self.date_begin
