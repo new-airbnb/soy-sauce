@@ -1,6 +1,6 @@
 from django.db import models
 
-from utils.utils import get_timestamp
+from utils.utils import get_time_zone_object
 
 
 # Create your models here.
@@ -14,4 +14,4 @@ class User(models.Model):
             ('user', 'user')
         ],
         default='user')
-    create_at = models.DateTimeField(default=get_timestamp)
+    create_at = models.DateTimeField(default=get_time_zone_object)
