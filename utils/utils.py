@@ -42,10 +42,10 @@ MAX_IMAGE_SIZE = 10240000
 def image_to_str(image, image_type):
     _prefix = "data:image/{};charset=utf-8;base64,".format(image_type)
     with image.open("rb") as f:
-        string = base64.b64encode(f.read())
+        string = base64.b64encode(f.read()).decode("utf-8")
         if len(string) > MAX_IMAGE_SIZE:
             return None
-        full_string = _prefix.encode("utf-8") + string
+        full_string = _prefix + string
         return full_string
 
 
