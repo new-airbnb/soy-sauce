@@ -93,9 +93,10 @@ def create(request):
 def upload_photo(request):
     house_id = request.POST["house_id"]
     photo_file = request.FILES["photo"]
+    photo_type = photo_file.name.split(".")[-1]
     try:
         house = House.objects.get(pk=int(house_id))
-        _base64_str = image_to_str(photo_file)
+        _base64_str = image_to_str(photo_file, photo_type)
         if _base64_str:
             photo = Photo(house=house, photo=_base64_str)
             photo.save()
@@ -115,6 +116,39 @@ def upload_photo(request):
             "success": 0,
             "msg": str(e)
         })
+
+
+@require_http_methods(["GET"])
+@login_required
+def download_photos(request):
+    try:
+        house_id = request.GET["house_id"]
+    except KeyError as e:
+        return JsonResponse({
+            "success": 0,
+            "msg": error_msg.MSG_400 + ": {}".format(e)
+        }, status=400)
+    try:
+        _house = House.objects.get(pk=house_id)
+    except ObjectDoesNotExist as e:
+        return JsonResponse({
+            "success": 0,
+            "msg": str(e)
+        }, status=404)
+    query_set = Photo.objects.filter(**{"house": _house})
+    if not query_set:
+        return JsonResponse({
+            "success": 0,
+            "msg": error_msg.PHOTOS_DOES_NOT_EXIST
+        }, status=404)
+    photo_list = list()
+    for each in query_set:
+        photo_list.append(each.photo)
+    return JsonResponse({
+        "success": 1,
+        "info": photo_list,
+        "number_of_photos": len(photo_list)
+    })
 
 
 @require_http_methods(["GET"])
