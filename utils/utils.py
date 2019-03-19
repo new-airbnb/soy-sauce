@@ -39,12 +39,14 @@ def str_to_boolean(string):
 MAX_IMAGE_SIZE = 10240000
 
 
-def image_to_str(image):
+def image_to_str(image, image_type):
+    _prefix = "data:image/{};charset=utf-8;base64,".format(image_type)
     with image.open("rb") as f:
         string = base64.b64encode(f.read())
         if len(string) > MAX_IMAGE_SIZE:
             return None
-        return string
+        full_string = _prefix.encode("utf-8") + string
+        return full_string
 
 
 def get_current_user_id(request):

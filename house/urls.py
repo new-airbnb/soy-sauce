@@ -7,5 +7,6 @@ urlpatterns = [
     path('upload_photo', views.upload_photo),
     path('search', views.search),
     path('info', views.info),
-    path('create_booking', views.create_booking)
+    path('create_booking', views.create_booking),
+    path('download_photos', views.download_photos)
 ]
