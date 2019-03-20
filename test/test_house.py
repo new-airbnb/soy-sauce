@@ -22,7 +22,8 @@ class TestHouse(BaseTest):
         'date_begin': '2019-03-01',
         'date_end': '2019-03-02',
         'number_of_beds': '3',
-        'description': 'this is a really nice house with a big living room.'
+        'description': 'this is a really nice house with a big living room.',
+        'price': '200'
     }
 
     @pytest.mark.run(order=31)
@@ -61,7 +62,9 @@ class TestHouse(BaseTest):
             'date_begin': '2019-03-01',
             'date_end': '2019-03-02',
             'number_of_beds': '3',
-            'description': 'although I am small, I have ten bathrooms.'
+            'description': 'although I am small, I have ten bathrooms.',
+            'price': '100'
+
         }
 
         # success
@@ -86,7 +89,8 @@ class TestHouse(BaseTest):
             'date_begin': '2019-03-01',
             'date_end': '2019-03-02',
             'number_of_beds': '3',
-            'description': 'this is a really nice house with a big living room.'
+            'description': 'this is a really nice house with a big living room.',
+            'price': '200'
         }
         response = self.post(client, '/create', data)
         assert response.status_code == 200
@@ -107,7 +111,8 @@ class TestHouse(BaseTest):
             'house_postcode': 'A1B C2D',
             'date_begin': '2019-03-01',
             'date_end': '2019-03-02',
-            'number_of_beds': '3'
+            'number_of_beds': '3',
+            'price': '200'
         }
         response = self.post(client, '/create', data)
         assert response.status_code == 400
@@ -128,7 +133,8 @@ class TestHouse(BaseTest):
             'date_begin': '2019-03-01',
             'date_end': '2019-02-01',
             'number_of_beds': '3',
-            'description': 'I am 690 a month.'
+            'description': 'I am 690 a month.',
+            'price': '690'
         }
         response = self.post(client, '/create', data)
         assert response.status_code == 400
@@ -151,7 +157,8 @@ class TestHouse(BaseTest):
             'latitude': '2.345678901',
             'date_begin': '2019-03-01',
             'date_end': '2019-03-02',
-            'number_of_beds': '-1'
+            'number_of_beds': '-1',
+            'price': '200'
         }
         response = self.post(client, '/create', data)
         assert response.status_code == 400
