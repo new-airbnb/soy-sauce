@@ -26,8 +26,9 @@ class House(models.Model):
     date_begin = models.DateField(default=get_date_timestamp)
     date_end = models.DateField(default=get_date_timestamp)
     number_of_beds = models.PositiveIntegerField(default=1)
-    create_at = models.DateTimeField(default=get_time_zone_object)
     description = models.CharField(max_length=200, default="no description")
+    price = models.PositiveIntegerField(default=0)
+    create_at = models.DateTimeField(default=get_time_zone_object)
 
     def date_is_valid(self):
         return self.date_end > self.date_begin
@@ -45,6 +46,7 @@ class House(models.Model):
             "date_end": self.date_end,
             "number_of_beds": self.number_of_beds,
             "description": self.description,
+            "price": self.price,
             "create_at": self.create_at
         }
 
