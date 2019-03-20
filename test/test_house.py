@@ -1,11 +1,12 @@
 import pytest
 
 import utils.error_msg as em
+from utils import error_msg
 from .base_test import BaseTest
 
 
 class TestHouse(BaseTest):
-    """test house view"""
+    '''test house view'''
     prefix = '/house'
     email = 'tester@gogo.com'
     password = 'notclear'
@@ -295,7 +296,7 @@ class TestHouse(BaseTest):
         assert isinstance(house_id, int) is True
 
         data = {
-            "house_id": house_id
+            'house_id': house_id
         }
 
         # test GET
@@ -330,7 +331,7 @@ class TestHouse(BaseTest):
         assert isinstance(house_id, int) is True
 
         data = {
-            "house_id": house_id
+            'house_id': house_id
         }
 
         # test POST
@@ -341,7 +342,7 @@ class TestHouse(BaseTest):
     def test_house_info_wrong_house_id(self, client, db_no_rollback):
         self.login(client, self.email, self.password)
         data = {
-            "house_id": 9999
+            'house_id': 9999
         }
         response = self.get(client, '/info', data)
         assert response.status_code == 404
@@ -352,7 +353,234 @@ class TestHouse(BaseTest):
     @pytest.mark.run(order=50)
     def test_house_info_without_login(self, client, db_no_rollback):
         data = {
-            "house_id": 1
+            'house_id': 1
         }
         response = self.get(client, '/info', data)
         assert response.status_code == 403
+
+    @pytest.mark.run(order=51)
+    def test_house_booking_without_login(self, client, db_no_rollback):
+        data = {
+            'house_id': 1,
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02'
+        }
+        response = self.post(client, '/create_booking', data)
+        assert response.status_code == 403
+
+    @pytest.mark.run(order=52)
+    def test_house_booking_request_method_is_get(self, client, db_no_rollback):
+        self.login(client, self.email, self.password)
+
+        # pre work, get the house_id
+        data = {
+            'longitude': '1.23456789',
+            'latitude': '2.345678901',
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02',
+            'number_of_beds': '3',
+            'max_distance': '20000'
+        }
+        response = self.get(client, '/search', data)
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json['success'] == 1
+        assert len(response_json['house_list']) == 1
+
+        house_id = response_json['house_list'][0]['house_id']
+        assert isinstance(house_id, int) is True
+
+        data = {
+            'house_id': house_id,
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02'
+        }
+        response = self.get(client, '/create_booking', data)
+        assert response.status_code == 405
+
+    @pytest.mark.run(order=52)
+    def test_house_booking_request_method_is_post(self, client, db_no_rollback):
+        self.login(client, self.email, self.password)
+
+        # pre work, get the house_id
+        data = {
+            'longitude': '1.23456789',
+            'latitude': '2.345678901',
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02',
+            'number_of_beds': '3',
+            'max_distance': '20000'
+        }
+        response = self.get(client, '/search', data)
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json['success'] == 1
+        assert len(response_json['house_list']) == 1
+
+        house_id = response_json['house_list'][0]['house_id']
+        assert isinstance(house_id, int) is True
+
+        data = {
+            'house_id': house_id,
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02'
+        }
+        response = self.post(client, '/create_booking', data)
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json['success'] == 1
+
+    @pytest.mark.run(order=53)
+    def test_house_booking_has_already_booked(self, client, db_no_rollback):
+        self.login(client, self.email, self.password)
+
+        # pre work, get the house_id
+        data = {
+            'longitude': '1.23456789',
+            'latitude': '2.345678901',
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02',
+            'number_of_beds': '3',
+            'max_distance': '20000'
+        }
+        response = self.get(client, '/search', data)
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json['success'] == 1
+        assert len(response_json['house_list']) == 1
+
+        house_id = response_json['house_list'][0]['house_id']
+        assert isinstance(house_id, int) is True
+
+        data = {
+            'house_id': house_id,
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02'
+        }
+        response = self.post(client, '/create_booking', data)
+        assert response.status_code == 404
+
+        response_json = response.json()
+        assert response_json['success'] == 0
+        assert response_json['msg'] == error_msg.HAS_ALREADY_BOOKED
+
+    @pytest.mark.run(order=54)
+    def test_house_booking_validation_error(self, client, db_no_rollback):
+        self.login(client, self.email, self.password)
+
+        # pre work, get the house_id
+        data = {
+            'longitude': '1.23456789',
+            'latitude': '2.345678901',
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02',
+            'number_of_beds': '3',
+            'max_distance': '20000'
+        }
+        response = self.get(client, '/search', data)
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json['success'] == 1
+        assert len(response_json['house_list']) == 1
+
+        house_id = response_json['house_list'][0]['house_id']
+        assert isinstance(house_id, int) is True
+
+        data = {
+            'house_id': house_id,
+            'date_begin': '2019-03-01',
+        }
+        response = self.post(client, '/create_booking', data)
+        assert response.status_code == 400
+
+        response_json = response.json()
+        assert response_json['success'] == 0
+
+    @pytest.mark.run(order=55)
+    def test_house_booking_date_invalid(self, client, db_no_rollback):
+        self.login(client, self.email, self.password)
+
+        # pre work, get the house_id
+        data = {
+            'longitude': '1.23456789',
+            'latitude': '2.345678901',
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02',
+            'number_of_beds': '3',
+            'max_distance': '20000'
+        }
+        response = self.get(client, '/search', data)
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json['success'] == 1
+        assert len(response_json['house_list']) == 1
+
+        house_id = response_json['house_list'][0]['house_id']
+        assert isinstance(house_id, int) is True
+
+        data = {
+            'house_id': house_id,
+            'date_begin': '2019-03-01',
+            'date_end': '2019-02-01'
+        }
+        response = self.post(client, '/create_booking', data)
+        assert response.status_code == 400
+
+        response_json = response.json()
+        assert response_json['success'] == 0
+        assert response_json['msg'] == error_msg.WRONG_DATE_BEGIN_END
+
+    @pytest.mark.run(order=56)
+    def test_house_booking_already_exist(self, client, db_no_rollback):
+        self.login(client, self.email, self.password)
+
+        # pre work, get the house_id
+        data = {
+            'longitude': '1.23456789',
+            'latitude': '2.345678901',
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02',
+            'number_of_beds': '3',
+            'max_distance': '20000'
+        }
+        response = self.get(client, '/search', data)
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json['success'] == 1
+        assert len(response_json['house_list']) == 1
+
+        house_id = response_json['house_list'][0]['house_id']
+        assert isinstance(house_id, int) is True
+
+        data = {
+            'house_id': house_id,
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02'
+        }
+        response = self.post(client, '/create_booking', data)
+        assert response.status_code == 404
+
+        response_json = response.json()
+        assert response_json['success'] == 0
+        assert response_json['msg'] == error_msg.HAS_ALREADY_BOOKED
+
+    @pytest.mark.run(order=57)
+    def test_house_booking_key_error(self, client, db_no_rollback):
+        self.login(client, self.email, self.password)
+
+        data = {
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02'
+        }
+        response = self.post(client, '/create_booking', data)
+        assert response.status_code == 400
+
+        response_json = response.json()
+        assert response_json['success'] == 0
