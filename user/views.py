@@ -26,6 +26,7 @@ def register(request):
 
     try:
         user = User(email=email, password=password, type='user')
+        user.full_clean()
         user.save()
     except ValidationError as e:
         return JsonResponse({
