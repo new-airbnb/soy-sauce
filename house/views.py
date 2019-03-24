@@ -9,7 +9,7 @@ from db.dbutils import exists, db_connection, geo_info_save, geo_info_search
 from utils import error_msg
 from utils.login_utils import login_required
 from utils.utils import image_to_str, str_to_datetime, get_current_user_id, check_if_this_time_can_book
-from .models import House, Photo, Booking
+from .models import House, Photo, Booking, Comment
 
 logger = logging.getLogger(__name__)
 db = db_connection()
@@ -297,3 +297,70 @@ def create_booking(request):
                 "book_id": str(book.pk)
             }
         })
+
+
+@require_http_methods(['POST'])
+@login_required
+def create_comment(request):
+    try:
+        house_id = request.POST["house_id"]
+        user_id = get_current_user_id(request)
+        comment_content = request.POST["comment"]
+    except KeyError as e:
+        return JsonResponse({
+            "success": 0,
+            "msg": error_msg.MSG_400 + ": {}".format(e)
+        }, status=400)
+
+    house = House.objects.get(pk=house_id)
+
+    try:
+        comment = Comment(
+            house=house,
+            user_id=user_id,
+            comment=comment_content
+        )
+        # we should use model.User as the model of user, then we can get user id.
+        # comment.full_clean()
+        comment.save()
+    except ValidationError as e:
+        return JsonResponse({
+            "success": 0,
+            "msg": error_msg.ILLEGAL_ARGUMENT
+        }, status=400)
+
+    return JsonResponse({
+        "success": 1,
+        "info": {
+            "comment_id": comment.pk
+        }
+    })
+
+
+@require_http_methods(['GET'])
+@login_required
+def get_comments(request):
+    try:
+        house_id = request.GET["house_id"]
+    except KeyError as e:
+        return JsonResponse({
+            "success": 0,
+            "msg": error_msg.MSG_400 + ": {}".format(e)
+        }, status=400)
+
+    house = House.objects.get(pk=house_id)
+
+    query_set = Comment.objects.filter(**{"house": house})
+    if not query_set:
+        return JsonResponse({
+            "success": 0,
+            "msg": error_msg.COMMENT_DOES_NOT_EXIST
+        }, status=404)
+    comments_list = list()
+    for each in query_set:
+        comments_list.append(each.comment)
+    return JsonResponse({
+        "success": 1,
+        "info": comments_list,
+        "number_of_comments": len(comments_list)
+    })
