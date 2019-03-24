@@ -71,3 +71,11 @@ class Booking(models.Model):
 
     def date_is_valid(self):
         return self.date_end > self.date_begin
+
+
+class Comment(models.Model):
+    """Comment Model"""
+    house = models.ForeignKey('house.House', on_delete=models.CASCADE)
+    user_id = models.ForeignKey('user.User', on_delete=models.CASCADE)
+    comment = models.CharField(max_length=200)
+    comment_date = models.DateTimeField(default=get_time_zone_object)
