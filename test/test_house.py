@@ -584,3 +584,117 @@ class TestHouse(BaseTest):
 
         response_json = response.json()
         assert response_json['success'] == 0
+
+    @pytest.mark.run(order=59)
+    def test_downloading_house_photo_photo_does_not_exist(self, client, db_no_rollback):
+        self.login(client, self.email, self.password)
+
+        # pre work, get the house_id
+        data = {
+            'longitude': '1.23456789',
+            'latitude': '2.345678901',
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02',
+            'number_of_beds': '3',
+            'max_distance': '20000'
+        }
+        response = self.get(client, '/search', data)
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json['success'] == 1
+        assert len(response_json['house_list']) == 1
+
+        house_id = response_json['house_list'][0]['house_id']
+        assert isinstance(house_id, int) is True
+
+        data = {
+            'house_id': house_id,
+        }
+        response = self.get(client, '/download_photos', data)
+
+        assert response.status_code == 404
+
+        response_json = response.json()
+        assert response_json['success'] == 0
+        assert response_json['msg'] == error_msg.PHOTOS_DOES_NOT_EXIST
+
+    @pytest.mark.run(order=60)
+    def test_uploading_house_photo(self, client, db_no_rollback):
+        self.login(client, self.email, self.password)
+
+        # pre work, get the house_id
+        data = {
+            'longitude': '1.23456789',
+            'latitude': '2.345678901',
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02',
+            'number_of_beds': '3',
+            'max_distance': '20000'
+        }
+        response = self.get(client, '/search', data)
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json['success'] == 1
+        assert len(response_json['house_list']) == 1
+
+        house_id = response_json['house_list'][0]['house_id']
+        assert isinstance(house_id, int) is True
+
+        with open('test/photo_for_test/test0.jpg', 'rb') as f:
+            data = {
+                'house_id': house_id,
+                'photo': f
+            }
+            response = self.post(client, '/upload_photo', data)
+
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json['success'] == 1
+
+    @pytest.mark.run(order=61)
+    def test_downloading_house_photo_success(self, client, db_no_rollback):
+        self.login(client, self.email, self.password)
+
+        # pre work, get the house_id
+        data = {
+            'longitude': '1.23456789',
+            'latitude': '2.345678901',
+            'date_begin': '2019-03-01',
+            'date_end': '2019-03-02',
+            'number_of_beds': '3',
+            'max_distance': '20000'
+        }
+        response = self.get(client, '/search', data)
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json['success'] == 1
+        assert len(response_json['house_list']) == 1
+
+        house_id = response_json['house_list'][0]['house_id']
+        assert isinstance(house_id, int) is True
+
+        data = {
+            'house_id': house_id,
+        }
+        response = self.get(client, '/download_photos', data)
+
+        assert response.status_code == 200
+
+        response_json = response.json()
+        assert response_json['success'] == 1
+        assert response_json['number_of_photos'] == 1
+
+    @pytest.mark.run(order=62)
+    def test_downloading_house_photo_object_does_not_exist(self, client, db_no_rollback):
+        self.login(client, self.email, self.password)
+
+        data = {
+            'house_id': 0,
+        }
+        response = self.get(client, '/download_photos', data)
+
+        assert response.status_code == 404
