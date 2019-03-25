@@ -1,6 +1,6 @@
 # soy-sauce
 
-[![Build Status](https://travis-ci.com/new-airbnb/soy-sauce.svg?branch=master)](https://travis-ci.com/new-airbnb/soy-sauce) [![Coverage Status](https://coveralls.io/repos/github/new-airbnb/soy-sauce/badge.svg?branch=master&service=github)](https://coveralls.io/github/new-airbnb/soy-sauce?branch=master)
+[![Build Status](https://travis-ci.com/new-airbnb/soy-sauce.svg?branch=master)](https://travis-ci.com/new-airbnb/soy-sauce) [![Coverage Status](https://coveralls.io/repos/github/new-airbnb/soy-sauce/badge.svg?branch=master)](https://coveralls.io/github/new-airbnb/soy-sauce?branch=master)
 
 Hey there, welcome to our repository of backend, find the wiki here: [wiki](https://github.com/new-airbnb/wiki)
 
