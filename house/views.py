@@ -232,9 +232,16 @@ def info(request):
             "success": 0,
             "msg": str(e)
         }, status=404)
+
+    booking = Booking.objects.filter(**{"house": house})
+    booked_date_list = list()
+    if len(booking):
+        for each in booking:
+            booked_date_list.append([each.date_begin, each.date_end])
     return JsonResponse({
         "success": 1,
-        "info": house.dict_it()
+        "info": house.dict_it(),
+        "already_booked": booked_date_list
     })
 
 
