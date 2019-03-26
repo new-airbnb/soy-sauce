@@ -64,7 +64,7 @@ def check_if_this_time_can_book(house, date_begin, date_end):
         if each.date_begin <= date_begin <= each.date_end or \
                 each.date_begin <= date_end <= each.date_end:
             return False
-        if each.date_end > date_begin and each.end_date < date_end:
+        if each.date_begin > date_begin and each.date_end < date_end:
             return False
     return True
 
