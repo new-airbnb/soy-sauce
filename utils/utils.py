@@ -54,6 +54,10 @@ def get_current_user_id(request):
     return current_user.pk
 
 
+def get_current_user_email(request):
+    return request.session["user"]["email"]
+
+
 def check_if_this_time_can_book(house, date_begin, date_end):
     from house.models import Booking
     query_set = Booking.objects.filter(**{"house": house})

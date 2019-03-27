@@ -8,7 +8,8 @@ from django.views.decorators.http import require_http_methods
 from db.dbutils import exists, db_connection, geo_info_save, geo_info_search
 from utils import error_msg
 from utils.login_utils import login_required
-from utils.utils import image_to_str, str_to_datetime, get_current_user_id, check_if_this_time_can_book
+from utils.utils import image_to_str, str_to_datetime, get_current_user_id, check_if_this_time_can_book, \
+    get_current_user_email
 from .models import House, Photo, Booking, Comment
 
 logger = logging.getLogger(__name__)
@@ -311,7 +312,7 @@ def create_booking(request):
 def create_comment(request):
     try:
         house_id = request.POST["house_id"]
-        user_id = get_current_user_id(request)
+        user_email = get_current_user_email(request)
         comment_content = request.POST["comment"]
     except KeyError as e:
         return JsonResponse({
@@ -324,7 +325,7 @@ def create_comment(request):
     try:
         comment = Comment(
             house=house,
-            user_id=user_id,
+            user_email=user_email,
             comment=comment_content
         )
         # we should use model.User as the model of user, then we can get user id.
@@ -365,7 +366,9 @@ def get_comments(request):
         }, status=404)
     comments_list = list()
     for each in query_set:
-        comments_list.append(each.comment)
+        one_single_comment = dict()
+        one_single_comment[each.user_email] = each.comment
+        comments_list.append(one_single_comment)
     return JsonResponse({
         "success": 1,
         "info": comments_list,
