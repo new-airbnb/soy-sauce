@@ -367,7 +367,7 @@ def get_comments(request):
     comments_list = list()
     for each in query_set:
         one_single_comment = dict()
-        one_single_comment[each.user_email] = each.comment
+        one_single_comment["email"], one_single_comment["comment"] = each.user_email, each.comment
         comments_list.append(one_single_comment)
     return JsonResponse({
         "success": 1,
