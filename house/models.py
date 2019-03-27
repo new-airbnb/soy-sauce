@@ -76,6 +76,6 @@ class Booking(models.Model):
 class Comment(models.Model):
     """Comment Model"""
     house = models.ForeignKey('house.House', on_delete=models.CASCADE)
-    user_id = models.ForeignKey('user.User', on_delete=models.CASCADE)
+    user_email = models.CharField(default="", max_length=128)
     comment = models.CharField(max_length=200)
     comment_date = models.DateTimeField(default=get_time_zone_object)
