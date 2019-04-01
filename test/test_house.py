@@ -796,7 +796,7 @@ class TestHouse(BaseTest):
 
         response_json = response.json()
         assert response_json['success'] == 1
-        assert response_json['info'] == [{self.email : 'this house is so great!'}]
+        assert response_json['info'] == [{'comment': 'this house is so great!', 'email': self.email}]
         assert response_json['number_of_comments'] == 1
 
     @pytest.mark.run(order=66)
